@@ -1,5 +1,0 @@
----
-alwaysApply: true
----
-
-When generating code, don't leave any comments.
