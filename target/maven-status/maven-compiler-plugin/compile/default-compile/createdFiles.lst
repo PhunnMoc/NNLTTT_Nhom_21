@@ -1,7 +1,0 @@
-vn\edu\ute\languagecenter\ui\StudentTableModel.class
-vn\edu\ute\languagecenter\model\Student.class
-vn\edu\ute\languagecenter\ui\UI.class
-vn\edu\ute\languagecenter\service\StudentService.class
-vn\edu\ute\languagecenter\App.class
-vn\edu\ute\languagecenter\persistence\JpaUtil.class
-vn\edu\ute\languagecenter\ui\MainFrame.class
