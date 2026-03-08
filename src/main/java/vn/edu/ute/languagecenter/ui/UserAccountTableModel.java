@@ -53,5 +53,9 @@ public class UserAccountTableModel extends AbstractTableModel {
         if (row < 0 || row >= data.size()) return null;
         return data.get(row);
     }
+
+    public List<UserAccount> getAllData() {
+        return new ArrayList<>(data);
+    }
 }
 

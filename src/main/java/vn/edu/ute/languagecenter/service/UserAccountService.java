@@ -4,16 +4,19 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
 import vn.edu.ute.languagecenter.model.UserAccount;
+import vn.edu.ute.languagecenter.model.UserRole;
 import vn.edu.ute.languagecenter.persistence.JpaUtil;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class UserAccountService {
 
@@ -49,6 +52,39 @@ public class UserAccountService {
         );
     }
 
+    public List<UserAccount> findByRole(UserRole role) {
+        if (role == null) {
+            return findAll();
+        }
+        String value = role.name();
+        return inTransaction(em ->
+                em.createQuery("select u from UserAccount u where u.role = :r order by u.id", UserAccount.class)
+                        .setParameter("r", value)
+                        .getResultList()
+        );
+    }
+
+    public List<UserAccount> findByRoles(UserRole... roles) {
+        if (roles == null || roles.length == 0) {
+            return findAll();
+        }
+        List<String> names = Arrays.stream(roles).map(UserRole::name).collect(Collectors.toList());
+        return inTransaction(em ->
+                em.createQuery("select u from UserAccount u where u.role in :roles order by u.id", UserAccount.class)
+                        .setParameter("roles", names)
+                        .getResultList()
+        );
+    }
+
+    public void setPassword(Long accountId, String rawPassword) {
+        inTransactionVoid(em -> {
+            UserAccount u = em.find(UserAccount.class, accountId);
+            if (u != null) {
+                u.setPasswordHash(hashPassword(rawPassword));
+            }
+        });
+    }
+
     public UserAccount findByUsername(String username) {
         return inTransaction(em -> {
             try {
@@ -74,6 +110,11 @@ public class UserAccountService {
         u.setStatus("ACTIVE");
         u.setFailedLoginCount(0);
         return create(u);
+    }
+
+    public UserAccount createWithRawPassword(String username, String rawPassword, UserRole role, Long relatedId) {
+        String value = role != null ? role.name() : null;
+        return createWithRawPassword(username, rawPassword, value, relatedId);
     }
 
     public UserAccount create(UserAccount u) {

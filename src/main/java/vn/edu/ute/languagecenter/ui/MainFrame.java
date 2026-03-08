@@ -32,6 +32,7 @@ public class MainFrame extends JFrame {
     private static final String CARD_COURSE = "course";
     private static final String CARD_STAFF = "staff";
     private static final String CARD_ACCOUNT = "account";
+    private static final String CARD_ACCOUNT_MGMT = "account_mgmt";
 
     private final CardLayout cardLayout = new CardLayout();
     private final JPanel cardPanel = new JPanel(cardLayout);
@@ -158,6 +159,9 @@ public class MainFrame extends JFrame {
         if (isAdminRole()) {
             panel.add(createNavButton("Nhân viên & Tài khoản", CARD_STAFF));
         }
+        if (isSuperAdmin()) {
+            panel.add(createNavButton("Quản lý tài khoản", CARD_ACCOUNT_MGMT));
+        }
         panel.add(Box.createVerticalGlue());
 
         JButton btnLogout = new JButton("Đăng xuất");
@@ -177,6 +181,7 @@ public class MainFrame extends JFrame {
         CoursePanel coursePanel = new CoursePanel();
         StaffPanel staffPanel = new StaffPanel();
         UserAccountPanel accountPanel = new UserAccountPanel();
+        AccountManagementPanel accountMgmtPanel = new AccountManagementPanel();
 
         cardPanel.add(dashboard, CARD_DASHBOARD);
         cardPanel.add(studentPanel, CARD_STUDENT);
@@ -184,6 +189,7 @@ public class MainFrame extends JFrame {
         cardPanel.add(coursePanel, CARD_COURSE);
         cardPanel.add(staffPanel, CARD_STAFF);
         cardPanel.add(accountPanel, CARD_ACCOUNT);
+        cardPanel.add(accountMgmtPanel, CARD_ACCOUNT_MGMT);
 
         showCard(CARD_DASHBOARD);
         return cardPanel;
@@ -219,6 +225,11 @@ public class MainFrame extends JFrame {
         if (role == null) return false;
         String v = role.toUpperCase();
         return v.equals("ADMIN") || v.equals("SUPER_ADMIN");
+    }
+
+    private boolean isSuperAdmin() {
+        if (role == null) return false;
+        return "SUPER_ADMIN".equalsIgnoreCase(role);
     }
 
     private void doLogout() {

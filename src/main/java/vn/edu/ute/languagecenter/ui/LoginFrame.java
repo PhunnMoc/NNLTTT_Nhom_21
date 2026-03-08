@@ -1,6 +1,7 @@
 package vn.edu.ute.languagecenter.ui;
 
 import vn.edu.ute.languagecenter.model.UserAccount;
+import vn.edu.ute.languagecenter.model.UserRole;
 import vn.edu.ute.languagecenter.service.StudentService;
 import vn.edu.ute.languagecenter.service.TeacherService;
 import vn.edu.ute.languagecenter.service.UserAccountService;
@@ -257,7 +258,7 @@ public class LoginFrame extends JFrame {
             JOptionPane.showMessageDialog(this, "Sai tài khoản hoặc mật khẩu");
             return;
         }
-        if (!isStaffRole(account.getRole())) {
+        if (!UserRole.isStaffTabRole(account.getRole())) {
             JOptionPane.showMessageDialog(this, "Tài khoản không thuộc nhóm Staff");
             return;
         }
@@ -322,10 +323,5 @@ public class LoginFrame extends JFrame {
         return v.equals("ADMIN") || v.equals("SUPER_ADMIN");
     }
 
-    private boolean isStaffRole(String r) {
-        if (r == null) return false;
-        String v = r.toUpperCase();
-        return v.equals("STAFF") || v.equals("CONSULTANT") || v.equals("ACCOUNTANT");
-    }
 }
 
