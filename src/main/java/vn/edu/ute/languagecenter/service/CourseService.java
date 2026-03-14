@@ -5,9 +5,11 @@ import jakarta.persistence.EntityTransaction;
 import vn.edu.ute.languagecenter.model.Course;
 import vn.edu.ute.languagecenter.persistence.JpaUtil;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class CourseService {
 
@@ -61,6 +63,30 @@ public class CourseService {
                 em.remove(c);
             }
         });
+    }
+
+    public List<Course> findCoursesByTeacherId(Long teacherId) {
+        if (teacherId == null) return List.of();
+        List<Course> list = inTransaction(em ->
+                em.createQuery(
+                        "select distinct c from CourseClass cc join cc.course c where cc.teacher.id = :tid",
+                        Course.class)
+                        .setParameter("tid", teacherId)
+                        .getResultList()
+        );
+        return list.stream().sorted(Comparator.comparing(Course::getId)).collect(Collectors.toList());
+    }
+
+    public List<Course> findCoursesByStudentId(Long studentId) {
+        if (studentId == null) return List.of();
+        List<Course> list = inTransaction(em ->
+                em.createQuery(
+                        "select distinct c from Enrollment e join e.courseClass cc join cc.course c where e.student.id = :sid",
+                        Course.class)
+                        .setParameter("sid", studentId)
+                        .getResultList()
+        );
+        return list.stream().sorted(Comparator.comparing(Course::getId)).collect(Collectors.toList());
     }
 }
 

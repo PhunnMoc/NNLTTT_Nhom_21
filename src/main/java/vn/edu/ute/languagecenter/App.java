@@ -1,7 +1,7 @@
 package vn.edu.ute.languagecenter;
 
-import vn.edu.ute.languagecenter.ui.LoginFrame;
-import vn.edu.ute.languagecenter.ui.UI;
+import vn.edu.ute.languagecenter.ui.frame.LoginFrame;
+import vn.edu.ute.languagecenter.ui.frame.UI;
 
 import javax.swing.SwingUtilities;
 
