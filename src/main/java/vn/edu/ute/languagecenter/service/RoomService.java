@@ -64,6 +64,24 @@ public class RoomService {
         });
     }
 
+    public List<Room> findRoomsByTeacherId(Long teacherId) {
+        if (teacherId == null) return List.of();
+        return inTransaction(em ->
+                em.createQuery("select r from Room r where r.id in (select cc.room.id from CourseClass cc where cc.teacher.id = :tid and cc.room is not null) order by r.id", Room.class)
+                        .setParameter("tid", teacherId)
+                        .getResultList()
+        );
+    }
+
+    public List<Room> findRoomsByStudentId(Long studentId) {
+        if (studentId == null) return List.of();
+        return inTransaction(em ->
+                em.createQuery("select r from Room r where r.id in (select cc.room.id from Enrollment e join e.courseClass cc where e.student.id = :sid and cc.room is not null) order by r.id", Room.class)
+                        .setParameter("sid", studentId)
+                        .getResultList()
+        );
+    }
+
     public Room create(Room r) {
         return inTransaction(em -> {
             em.persist(r);

@@ -71,14 +71,14 @@ public class TeacherStudentMainFrameContent implements MainFrameContent {
                 javax.swing.JTabbedPane tabs = new javax.swing.JTabbedPane();
                 tabs.addTab("Khóa học đang dạy", new MyCoursesPanel(relatedId, true));
                 tabs.addTab("Lớp đã phân công", new MyClassesPanel(relatedId));
-                tabs.addTab("Lịch phòng", new RoomSchedulePanel());
+                tabs.addTab("Lịch phòng", new RoomSchedulePanel(relatedId, true));
                 mainPanel.add(tabs, java.awt.BorderLayout.CENTER);
             } else {
                 javax.swing.JTabbedPane tabs = new javax.swing.JTabbedPane();
                 tabs.addTab("Đăng ký khóa học", new CourseRegistrationPanel(relatedId));
                 tabs.addTab("Khóa học đã đăng ký", new StudentEnrollmentsPanel(relatedId));
                 tabs.addTab("Hóa đơn", new StudentInvoicesPanel(relatedId));
-                tabs.addTab("Lịch phòng", new RoomSchedulePanel());
+                tabs.addTab("Lịch phòng", new RoomSchedulePanel(relatedId, false));
                 mainPanel.add(tabs, java.awt.BorderLayout.CENTER);
             }
         }

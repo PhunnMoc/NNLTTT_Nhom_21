@@ -5,6 +5,7 @@ import jakarta.persistence.EntityTransaction;
 import vn.edu.ute.languagecenter.model.Schedule;
 import vn.edu.ute.languagecenter.persistence.JpaUtil;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -88,11 +89,29 @@ public class ScheduleService {
         });
     }
 
-    public List<Schedule> findByRoomAndRange(Long roomId, java.time.LocalDate from, java.time.LocalDate to) {
+    public List<Schedule> findByDateRange(LocalDate from, LocalDate to) {
+        if (from == null || to == null) return List.of();
+        return inTransaction(em ->
+                em.createQuery(
+                                "select s from Schedule s " +
+                                        "left join fetch s.courseClass cc " +
+                                        "left join fetch cc.course " +
+                                        "left join fetch cc.teacher " +
+                                        "left join fetch s.room " +
+                                        "where s.date between :from and :to order by s.date, s.startTime",
+                                Schedule.class)
+                        .setParameter("from", from)
+                        .setParameter("to", to)
+                        .getResultList()
+        );
+    }
+
+    public List<Schedule> findByRoomAndRange(Long roomId, LocalDate from, LocalDate to) {
         if (roomId == null || from == null || to == null) return List.of();
         return inTransaction(em ->
                 em.createQuery(
-                                "select s from Schedule s left join fetch s.courseClass c left join fetch c.course left join fetch c.teacher where s.room.id = :rid and s.date between :from and :to order by s.date, s.startTime",
+                                "select s from Schedule s left join fetch s.courseClass c left join fetch c.course left join fetch c.teacher left join fetch c.room " +
+                                        "where c.room.id = :rid and s.date between :from and :to order by s.date, s.startTime",
                                 Schedule.class)
                         .setParameter("rid", roomId)
                         .setParameter("from", from)
